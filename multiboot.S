@@ -26,7 +26,11 @@ header_start:
     .long 8
 
 header_end:
-
+.section .bss
+.align 16
+stack_bottom:
+.skip 16384
+stack_top:
 # -------------------------
 # CODE SECTION
 # -------------------------
@@ -34,12 +38,13 @@ header_end:
 .global _start
 .extern kernel_main
 
-_start:
+_start: 
+    cli
+    mov $stack_top, %esp
     mov %esp, %ebp
-    push %ebx   # multiboot info
-    push %eax   # magic
+    push %ebx
+    push %eax
     call kernel_main
-
 hang:
     cli
     hlt
